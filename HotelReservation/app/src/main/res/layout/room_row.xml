@@ -5,71 +5,84 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="195dp"
         android:layout_marginBottom="5dp"
         android:background="#ffffff"
         android:padding="15dp">
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/tvfotohotel"
             android:layout_width="125dp"
             android:layout_height="140dp"
             android:layout_weight="1" />
 
         <TextView
-            android:id="@+id/tvprofilename"
+            android:id="@+id/tvnamahotel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_marginStart="26dp"
             android:layout_marginLeft="26dp"
             android:layout_marginTop="-3dp"
-            android:layout_toEndOf="@id/imageView"
-            android:layout_toRightOf="@id/imageView"
+            android:layout_toEndOf="@id/tvfotohotel"
+            android:layout_toRightOf="@id/tvfotohotel"
             android:text="MaxOneHotels at Tidar Surabaya"
             android:textColor="#333"
             android:textSize="22dp" />
 
         <TextView
-            android:id="@+id/tvemail"
+            android:id="@+id/tvalamat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
+            android:layout_below="@+id/tvnamahotel"
             android:layout_marginStart="26dp"
             android:layout_marginLeft="26dp"
-            android:layout_marginTop="60dp"
-            android:layout_toEndOf="@id/imageView"
-            android:layout_toRightOf="@id/imageView"
+            android:layout_marginTop="4dp"
+            android:layout_toEndOf="@id/tvfotohotel"
+            android:layout_toRightOf="@id/tvfotohotel"
             android:text="Jl. Tidar No. 5, Surabaya, Indonesia"
             android:textColor="#333"
             android:textSize="12dp" />
 
         <TextView
-            android:id="@+id/tvprice"
+            android:id="@+id/tvtanggal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
+            android:layout_below="@+id/tvalamat"
             android:layout_marginStart="26dp"
             android:layout_marginLeft="26dp"
-            android:layout_marginTop="100dp"
-            android:layout_toEndOf="@id/imageView"
-            android:layout_toRightOf="@id/imageView"
-            android:text="Rp 1.000.000,00"
+            android:layout_marginTop="5dp"
+            android:layout_toEndOf="@id/tvfotohotel"
+            android:layout_toRightOf="@id/tvfotohotel"
+            android:text="Tanggal check-in"
             android:textColor="#333"
             android:textSize="18dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
+            android:layout_below="@+id/tvtanggal"
             android:layout_marginStart="26dp"
             android:layout_marginLeft="26dp"
-            android:layout_marginTop="120dp"
-            android:layout_toEndOf="@id/imageView"
-            android:layout_toRightOf="@id/imageView"
-            android:text="per kamar, per malam"
+            android:layout_marginTop="6dp"
+            android:layout_toEndOf="@id/tvfotohotel"
+            android:layout_toRightOf="@id/tvfotohotel"
+            android:text="13.00"
             android:textColor="#333"
             android:textSize="14dp" />
 
+        <Button
+            android:id="@+id/buttonroom"
+            android:layout_width="117dp"
+            android:layout_height="35dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="0dp"
+            android:layout_marginBottom="0dp"
+            android:background="#FF613F"
+            android:text="Check In"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:focusable="false"/>
     </RelativeLayout>
 </LinearLayout>
