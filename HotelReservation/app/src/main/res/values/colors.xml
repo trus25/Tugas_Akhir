@@ -5,5 +5,5 @@
     <color name="white">#ffffff</color>
     <color name="colorAccent">#FF4081</color>
     <color name="darkgray">#6c6c6c</color>
-
+    <color name="text_color">#282d27</color>
 </resources>

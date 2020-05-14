@@ -15,6 +15,7 @@ import com.example.hotelreservation.R;
 import com.example.hotelreservation.controller.DownloadImageTask;
 import com.example.hotelreservation.model.Hotel;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class HotelListView extends ArrayAdapter<Hotel>{
@@ -46,15 +47,21 @@ public class HotelListView extends ArrayAdapter<Hotel>{
 
         }
         Hotel hotel = getItem(position);
-
+        String harga="Rp " + currencyFormat(hotel.getHarga());
         viewHolder.tvw1.setText(hotel.getNama());
         viewHolder.tvw2.setText(hotel.getAlamat());
-        viewHolder.tvw3.setText(hotel.getHarga());
+        viewHolder.tvw3.setText(harga);
         new DownloadImageTask(viewHolder.ivw).execute(hotel.getImagepath());
 
 
         return r;
     }
+
+    public static String currencyFormat(String amount) {
+        DecimalFormat formatter = new DecimalFormat("###,###,##0.00");
+        return formatter.format(Double.parseDouble(amount));
+    }
+
 
     class ViewHolder{
 

@@ -10,25 +10,38 @@ import androidx.fragment.app.Fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.hotelreservation.R;
 import com.example.hotelreservation.controller.SessionManagement;
+import com.example.hotelreservation.model.Share;
 import com.example.hotelreservation.model.User;
 import com.example.hotelreservation.view.home.HomeFragment;
 import com.example.hotelreservation.view.hotel.BookFragment;
 import com.example.hotelreservation.view.login.LoginActivity;
 import com.example.hotelreservation.view.myroom.RoomFragment;
+import com.example.hotelreservation.view.share.ShareFragment;
 import com.google.android.material.navigation.NavigationView;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 //import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+//    private static final String LAST_OPENED_FRAGMENT_REF = "LAST_OPENED_FRAGMENT_REF";
     private DrawerLayout drawer;
     TextView textView;
     private User user;
+
+//    private static final int HOME_FRAGMENT = 0;
+//    private static final int BOOK_FRAGMENT = 1;
+//    private static final int ROOM_FRAGMENT= 2;
+
+//    private int currentOpenedFragment = HOME_FRAGMENT;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +71,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+//    @Override
+//    protected void onSaveInstanceState(Bundle outState) {
+//        super.onSaveInstanceState(outState);
+//        outState.putInt(LAST_OPENED_FRAGMENT_REF, currentOpenedFragment);
+//    }
+//    private Fragment initFragmentByType(int type) {
+//        switch(type) {
+//            case HOME_FRAGMENT: return new HomeFragment();
+//            case BOOK_FRAGMENT: return new BookFragment();
+//            default: throw new IllegalArgumentException("There is no type: " + type);
+//        }
+//    }
+
     private boolean loadFragment(Fragment fragment) {
         if (fragment != null) {
             getSupportFragmentManager()
@@ -79,6 +105,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.room:
                 fragment = new RoomFragment();
                 break;
+            case R.id.shared:
+                fragment = new ShareFragment();
+                break;
             case R.id.logout:
 
                 SessionManagement sessionManagement = new SessionManagement(MainActivity.this);
@@ -96,12 +125,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else{
             super.onBackPressed();
         }
-        
+
     }
 
     public void moveToLogin(){
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        System.out.println("the code is catch");
     }
 }

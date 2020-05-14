@@ -1,8 +1,10 @@
 package com.example.hotelreservation.view.myroom;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +18,14 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.hotelreservation.R;
+import com.example.hotelreservation.controller.CaptureActivityAnyOrientation;
 import com.example.hotelreservation.controller.Connector;
 import com.example.hotelreservation.controller.DataPackager;
 import com.example.hotelreservation.controller.SessionManagement;
 import com.example.hotelreservation.model.Data;
 import com.example.hotelreservation.model.Myroom;
-import com.google.zxing.Result;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -36,9 +40,7 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 
-import me.dm7.barcodescanner.zxing.ZXingScannerView;
-
-public class RoomFragment extends Fragment {
+public class RoomFragment extends Fragment{
     String urladdress="http://192.168.1.102/Hotel/Pengguna/getMyroom/";
     ListView listView;
     ArrayList<Myroom> arrayList;
@@ -46,20 +48,21 @@ public class RoomFragment extends Fragment {
     String line=null;
     String result=null;
     String id;
-    Data[] data = new Data[1];
-    private ZXingScannerView mScannerView;
+    Data[] postdata = new Data[1];
+    String scanContent;
+    String scanFormat;
+    String QRCODE_STRING;
+    int getposition;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_room, container, false);
-//        mScannerView = new ZXingScannerView(getContext());   // Programmatically initialize the scanner view
-//        setContentView(mScannerView);                // Set the scanner view as the content view
         listView = (ListView)view.findViewById(R.id.lviewroom);
         StrictMode.setThreadPolicy((new StrictMode.ThreadPolicy.Builder().permitNetwork().build()));
         arrayList = new ArrayList<Myroom>();
         SessionManagement sessionManagement = new SessionManagement(getContext());
         this.id = String.valueOf(sessionManagement.getSession());
-        data[0]= new Data("id",id);
+        postdata[0]= new Data("id",id);
         String result = send(urladdress);
         collectData(getContext(),result);
         MyroomListView myroomListView =new MyroomListView(getContext(),R.layout.room_row,arrayList);
@@ -67,31 +70,37 @@ public class RoomFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getContext(),"test123",Toast.LENGTH_LONG).show();
+//                Toast.makeText(getContext(),"test123",Toast.LENGTH_LONG).show();
                 Myroom myroom = arrayList.get(position);
                 Button checkbutton=view.findViewById(R.id.buttonroom);
+                getposition = position;
 
                 if(myroom.getCheckinstats().equals("1")){
-                    Toast.makeText(getContext(),"1",Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getContext(), MyroomActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("id", myroom.getIdkmr());
+                    intent.putExtras(bundle);
+                    intent.putExtra("idtr", myroom.getIdtr());
+                    intent.putExtra("nomor", myroom.getNomor());
+                    intent.putExtra("nama", myroom.getNama());
+                    intent.putExtra("image", myroom.getImagepath());
+                    intent.putExtra("status", "owner");
+                    startActivity(intent);
                 }else{
-                    String urlcheckin="http://192.168.1.102/Hotel/Pengguna/confirm/";
-                    data[0]= new Data("idkamar", myroom.getIdkmr());
-                    String result = send(urlcheckin);
-                    if(result != null)
-                    {
-                        if(result.equals("success")) {
-                            checkbutton.setText("Masuk");
-                            myroom.setCheckinstats("1");
-                            Toast.makeText(getContext(),result,Toast.LENGTH_LONG).show();
-                        }else{
-                            Toast.makeText(getContext(),"Error",Toast.LENGTH_LONG).show();
-                        }
-                    }else
-                    {
-                        //NO SUCCESS
-                        Toast.makeText(getContext(),"Error",Toast.LENGTH_LONG).show();
-                    }
+                    //for fragment you need to instantiate integrator in this way
+                    IntentIntegrator scanIntegrator = IntentIntegrator.forSupportFragment(RoomFragment.this);
+                    scanIntegrator.setPrompt("Scan");
+                    scanIntegrator.setBeepEnabled(true);
+
+//                enable the following line if you want QR code
+                    scanIntegrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES);
+
+                    scanIntegrator.setCaptureActivity(CaptureActivityAnyOrientation.class);
+                    scanIntegrator.setOrientationLocked(true);
+                    scanIntegrator.setBarcodeImageEnabled(true);
+                    scanIntegrator.initiateScan();
                 }
+
             }
         });
         return view;
@@ -115,9 +124,11 @@ public class RoomFragment extends Fragment {
                             listmyroom.getString("checkin"),
                             listmyroom.getString("checkout"),
                             listmyroom.getString("checkinstats"),
+                            listmyroom.getString("currentstatus"),
                             listmyroom.getString("nama"),
                             listmyroom.getString("alamat"),
-                            listmyroom.getString("image")
+                            listmyroom.getString("image"),
+                            listmyroom.getString("nomor")
                     ));
                 }
             }
@@ -149,7 +160,7 @@ public class RoomFragment extends Fragment {
 
             //WRITE
             BufferedWriter bw=new BufferedWriter(new OutputStreamWriter(os,"UTF-8"));
-            bw.write(new DataPackager(data).packData());
+            bw.write(new DataPackager(postdata).packData());
 
             bw.flush();
 
@@ -191,24 +202,51 @@ public class RoomFragment extends Fragment {
         return null;
     }
 
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        mScannerView.setResultHandler(this); // Register ourselves as a handler for scan results.
-//        mScannerView.startCamera();          // Start camera on resume
-//    }
-//
-//    @Override
-//    public void onPause() {
-//        super.onPause();
-//        mScannerView.stopCamera();           // Stop camera on pause
-//    }
-//
-//    @Override
-//    public void handleResult(Result rawResult) {
-//        // Do something with the result here
-//
-//        // If you would like to resume scanning, call this method below:
-//        mScannerView.resumeCameraPreview(this);
-//    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (scanningResult != null) {
+            if (scanningResult.getContents() != null) {
+                scanContent = scanningResult.getContents().toString();
+                scanFormat = scanningResult.getFormatName().toString();
+                Myroom myroom = arrayList.get(getposition);
+                QRCODE_STRING = id+"-"+myroom.getIdht()+"-"+myroom.getNomor();
+                if(scanContent.equals(QRCODE_STRING)){
+                    String urlcheckin="http://192.168.1.102/Hotel/Pengguna/confirm/";
+                    postdata[0]= new Data("idkamar", myroom.getIdkmr());
+                    String result = send(urlcheckin);
+                    if(result != null)
+                    {
+                        if(result.equals("success")) {
+                            Toast.makeText(getContext(),"Check-in Sukses",Toast.LENGTH_LONG).show();
+                            Intent intent = new Intent(getContext(), MyroomActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putString("id", myroom.getIdkmr());
+                            intent.putExtras(bundle);
+                            intent.putExtra("idtr", myroom.getIdtr());
+                            intent.putExtra("nomor", myroom.getNomor());
+                            intent.putExtra("nama", myroom.getNama());
+                            intent.putExtra("image", myroom.getImagepath());
+                            intent.putExtra("status", "owner");
+                            startActivity(intent);
+
+                        }else{
+                            Toast.makeText(getContext(),"Check-in Error",Toast.LENGTH_LONG).show();
+                        }
+                    }else
+                    {
+                        //NO SUCCESS
+                        Toast.makeText(getContext(),"Error",Toast.LENGTH_LONG).show();
+                    }
+                }else{
+                    Toast.makeText(getActivity(), "QRCode tidak cocok", Toast.LENGTH_SHORT).show();
+                }
+            }
+            Toast.makeText(getActivity(), scanContent + "   type:" + scanFormat, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getActivity(), "Nothing scanned", Toast.LENGTH_SHORT).show();
+        }
+    }
 }

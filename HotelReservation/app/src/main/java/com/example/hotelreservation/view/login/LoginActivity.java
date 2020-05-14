@@ -15,6 +15,7 @@ import com.example.hotelreservation.R;
 import com.example.hotelreservation.controller.Connector;
 import com.example.hotelreservation.controller.DataPackager;
 import com.example.hotelreservation.controller.SessionManagement;
+import com.example.hotelreservation.midtrans.MidtransActivity;
 import com.example.hotelreservation.model.Data;
 import com.example.hotelreservation.model.User;
 import com.example.hotelreservation.view.MainActivity;

@@ -50,9 +50,9 @@ public class BookFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getContext(),"test123",Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(getContext(), HoteldetailActivity.class);
                 Hotel hotel = arrayList.get(position);
+                Intent intent = new Intent(getContext(), HoteldetailActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 Bundle bundle = new Bundle();
                 bundle.putString("id", hotel.getId());
                 intent.putExtras(bundle);
@@ -66,11 +66,6 @@ public class BookFragment extends Fragment {
         });
 
         return view;
-    }
-
-    public static String currencyFormat(String amount) {
-        DecimalFormat formatter = new DecimalFormat("###,###,##0.00");
-        return formatter.format(Double.parseDouble(amount));
     }
 
     private void collectData()
@@ -106,13 +101,12 @@ public class BookFragment extends Fragment {
 
             for(int i=0;i<ja.length();i++){
                 JSONObject listHotel = ja.getJSONObject(i);
-                harga="Rp " + currencyFormat(listHotel.getString("harga"));
                 arrayList.add(new Hotel(
                         listHotel.getString("idhotel"),
                         listHotel.getString("nama"),
                         listHotel.getString("alamat"),
                         listHotel.getString("image"),
-                        harga
+                        listHotel.getString("harga")
                 ));
 //                name[i]=listHotel.getString("nama");
 //                email[i]=listHotel.getString("alamat");

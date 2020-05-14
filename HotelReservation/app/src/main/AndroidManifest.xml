@@ -1,23 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.hotelreservation">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.hotelreservation" >
+
+    <uses-sdk tools:overrideLibrary="com.google.zxing.client.android" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
 
-
     <application
-        android:allowBackup="true"
+        android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".view.myroom.MyroomActivity"></activity>
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"
+        tools:replace="android:usesCleartextTraffic" >
+        <activity android:name=".midtrans.ReviewActivity" >
+        </activity>
+        <activity android:name=".midtrans.MidtransActivity" />
+        <activity
+            android:name=".view.myroom.MyroomActivity"
+            android:parentActivityName=".view.MainActivity"
+            android:theme="@style/AppThemeAction" />
         <activity
             android:name=".view.hotel.HoteldetailActivity"
-            android:parentActivityName=".view.MainActivity" />
-        <activity android:name=".view.login.LoginActivity">
+            android:parentActivityName=".view.MainActivity"
+            android:theme="@style/AppThemeAction" />
+        <activity android:name=".view.login.LoginActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,7 +37,13 @@
         </activity>
         <activity
             android:name=".view.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".controller.CaptureActivityAnyOrientation"
+            android:screenOrientation="fullSensor"
+            android:stateNotNeeded="true"
+            android:theme="@style/zxing_CaptureTheme"
+            android:windowSoftInputMode="stateAlwaysHidden" />
     </application>
 
 </manifest>

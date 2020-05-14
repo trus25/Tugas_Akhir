@@ -9,11 +9,13 @@ public class Myroom {
     private String checkin;
     private String checkout;
     private String checkinstats;
+    private String currentstatus;
     private String nama;
     private String alamat;
     private String imagepath;
+    private String nomor;
 
-    public Myroom(String idtr, String idusr, String idht, String idkmr, String tanggal, String checkin, String checkout, String checkinstats, String nama, String alamat, String imagepath) {
+    public Myroom(String idtr, String idusr, String idht, String idkmr, String tanggal, String checkin, String checkout, String checkinstats, String currentstatus, String nama, String alamat, String imagepath, String nomor) {
         this.idtr = idtr;
         this.idusr = idusr;
         this.idht = idht;
@@ -22,9 +24,11 @@ public class Myroom {
         this.checkin = checkin;
         this.checkout = checkout;
         this.checkinstats = checkinstats;
+        this.currentstatus = currentstatus;
         this.nama = nama;
         this.alamat = alamat;
         this.imagepath = imagepath;
+        this.nomor = nomor;
     }
 
     public String getIdtr() {
@@ -91,6 +95,14 @@ public class Myroom {
         this.checkinstats = checkinstats;
     }
 
+    public String getCurrentstatus() {
+        return currentstatus;
+    }
+
+    public void setCurrentstatus(String currentstatus) {
+        this.currentstatus = currentstatus;
+    }
+
     public String getNama() {
         return nama;
     }
@@ -113,5 +125,13 @@ public class Myroom {
 
     public void setImagepath(String imagepath) {
         this.imagepath = imagepath;
+    }
+
+    public String getNomor() {
+        return nomor;
+    }
+
+    public void setNomor(String nomor) {
+        this.nomor = nomor;
     }
 }

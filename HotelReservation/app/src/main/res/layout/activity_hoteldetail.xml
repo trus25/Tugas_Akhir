@@ -1,93 +1,172 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:context="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/btn_pay_container"
+        >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/hotelpic"
+                android:layout_width="match_parent"
+                android:layout_height="224dp"
+                android:src="@drawable/img_1"
+                android:scaleType="fitXY"/>
+
+            <RelativeLayout
+                android:id="@+id/order_review_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/hotelpic"
+                android:layout_marginTop="@dimen/sixteen_dp"
+                android:layout_marginRight="20dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/sixteen_dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/hotelname"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Favehotel Rungkut Surabaya"
+                        android:textSize="24sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/hotelalamat"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Jl.Ismail marzuki" />
+
+                    <TextView
+                        android:id="@+id/hargahotel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rp 100.000"
+                        android:textColor="@color/navy_blue.primary_dark"
+                        android:textSize="18sp" />
+                </LinearLayout>
+            </RelativeLayout>
+
+            <View
+                android:id="@+id/divider_1"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_below="@id/order_review_container"
+                android:layout_marginTop="@dimen/eight_dp"
+                android:layout_marginBottom="@dimen/eight_dp"
+                android:background="@color/gray_divider" />
+
+            <TextView
+                android:id="@+id/title_checkin_details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/divider_1"
+                android:layout_marginLeft="@dimen/sixteen_dp"
+                android:layout_marginTop="@dimen/sixteen_dp"
+                android:layout_marginRight="@dimen/sixteen_dp"
+                android:paddingTop="@dimen/eight_dp"
+                android:paddingBottom="@dimen/eight_dp"
+                android:text="ORDER DETAILS"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:id="@+id/checkin_details_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/title_checkin_details"
+                android:layout_marginLeft="@dimen/sixteen_dp"
+                android:layout_marginRight="@dimen/sixteen_dp"
+                android:orientation="vertical"
+                android:descendantFocusability="beforeDescendants"
+                android:focusableInTouchMode="true">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/edit_checkin"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:hint="Tanggal Checkin"
+                        android:focusable="false"
+                        android:inputType="none"
+                        android:maxLength="64"
+                        android:textSize="16sp"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <EditText
+                        android:id="@+id/edit_checkout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Durasi"
+                        android:inputType="number"
+                        android:maxLength="128"
+                        android:textSize="16sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+        </RelativeLayout>
+    </ScrollView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/two_dp"
+        android:layout_above="@+id/btn_pay_container"
+        android:background="@color/light_gray" />
 
     <RelativeLayout
+        android:id="@+id/btn_pay_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="@dimen/button_size"
+        android:layout_alignParentBottom="true"
+        android:clipToPadding="false"
+        android:padding="6dp">
 
-        <ImageView
-            android:id="@+id/hotelpic"
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="224dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:adjustViewBounds="true"
-            android:scaleType="fitXY"
-            android:background="@drawable/img_1"/>
+            android:layout_height="match_parent"
+            app:cardCornerRadius="@dimen/two_dp"
+            app:cardElevation="@dimen/two_dp"
+            app:cardUseCompatPadding="true">
 
-        <TextView
-            android:id="@+id/hotelname"
-            android:layout_width="382dp"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/hotelpic"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="9dp"
-            android:layout_marginTop="24dp"
-            android:text="Favehotel Rungkut Surabaya"
-            android:textSize="24dp"
-            android:textStyle="bold"/>
+            <com.midtrans.sdk.uikit.widgets.FancyButton
+                android:id="@+id/buttonpay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:fb_defaultColor="@color/colorPrimary"
+                app:fb_focusColor="@color/colorAccentLight"
+                app:fb_radius="@dimen/two_dp"
+                app:fb_text="Lanjut Pembayaran"
+                app:fb_textGravity="center_vertical"
+                app:fb_textSize="@dimen/button_primary_text_size" />
 
-        <TextView
-            android:id="@+id/hotelalamat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/hotelname"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="9dp"
-            android:layout_marginTop="14dp"
-            android:text="Favehotel Rungkut Surabaya"
-            android:textSize="14dp" />
+            <ImageView
+                android:id="@+id/button_chevron"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="right"
+                android:layout_marginEnd="@dimen/four_dp"
+                android:layout_marginRight="@dimen/four_dp"
+                android:src="@drawable/ic_arrow_right_white" />
 
-        <TextView
-            android:id="@+id/hargahotel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/hotelalamat"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="29dp"
-            android:text="Rp 100.000,00/kamar"
-            android:textSize="18dp"
-            android:textStyle="bold"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/hargahotel"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="11dp"
-            android:layout_marginTop="36dp"
-            android:text="Pilih Kamar"
-            android:textSize="18dp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/hargahotel"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="92dp"
-            android:text="Pilih nomor Kamar"
-            android:textSize="18dp"
-            android:textStyle="bold" />
-
-        <Button
-            android:id="@+id/button"
-            android:layout_width="139dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="491dp"
-            android:layout_marginEnd="14dp"
-            android:background="#FF613F"
-            android:text="Bayar"
-            android:textColor="@color/white"
-            android:textStyle="bold" />
-
+        </androidx.cardview.widget.CardView>
     </RelativeLayout>
-</LinearLayout>
+</RelativeLayout>
