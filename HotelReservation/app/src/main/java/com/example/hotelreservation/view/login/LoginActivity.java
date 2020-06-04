@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -15,7 +16,7 @@ import com.example.hotelreservation.R;
 import com.example.hotelreservation.controller.Connector;
 import com.example.hotelreservation.controller.DataPackager;
 import com.example.hotelreservation.controller.SessionManagement;
-import com.example.hotelreservation.midtrans.MidtransActivity;
+import com.example.hotelreservation.model.Constant;
 import com.example.hotelreservation.model.Data;
 import com.example.hotelreservation.model.User;
 import com.example.hotelreservation.view.MainActivity;
@@ -29,7 +30,7 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 
 public class LoginActivity extends AppCompatActivity {
-    String urlAddress = "http://192.168.1.102/Hotel/Login/login";
+    String urlAddress = Constant.BASE_URL + "Login/login";
     EditText userTxt,passTxt;
 
     ProgressDialog pd;
@@ -37,6 +38,13 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        Button btnLogin = (Button) findViewById(R.id.btnLogin);
+        btnLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                login();
+            }
+        });
     }
 
     @Override
@@ -58,7 +66,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    public void login(View view) {
+    public void login() {
         userTxt= (EditText) findViewById(R.id.etUsername);
         passTxt= (EditText) findViewById(R.id.etPassword);
         Login s=new Login(LoginActivity.this,urlAddress,userTxt,passTxt);

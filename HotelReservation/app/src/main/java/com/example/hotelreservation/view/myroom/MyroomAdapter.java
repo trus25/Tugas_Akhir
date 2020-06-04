@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.hotelreservation.R;
 import com.example.hotelreservation.controller.Connector;
 import com.example.hotelreservation.controller.DataPackager;
+import com.example.hotelreservation.model.Constant;
 import com.example.hotelreservation.model.Data;
 import com.example.hotelreservation.model.Share;
 import com.example.hotelreservation.view.MainActivity;
@@ -88,7 +89,7 @@ public class MyroomAdapter extends RecyclerView.Adapter<MyroomAdapter.ViewHolder
                     // DO SOMETHING HERE
                     Share share = itemList.get(getLayoutPosition());
                     String sid = share.getSid();
-                    String urladdress="http://192.168.1.102/Hotel/Pengguna/delete_sharer";
+                    String urladdress= Constant.BASE_URL + "Myroom/delete_sharer";
                     Data[] postdata = new Data[1];
                     postdata[0]= new Data("sid",sid);
                     String result = send(urladdress, postdata);

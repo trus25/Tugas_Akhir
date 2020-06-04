@@ -17,9 +17,9 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:replace="android:usesCleartextTraffic" >
-        <activity android:name=".midtrans.ReviewActivity" >
+        <activity android:name=".view.midtrans.ReviewActivity" >
         </activity>
-        <activity android:name=".midtrans.MidtransActivity" />
+        <activity android:name=".view.midtrans.MidtransActivity" />
         <activity
             android:name=".view.myroom.MyroomActivity"
             android:parentActivityName=".view.MainActivity"

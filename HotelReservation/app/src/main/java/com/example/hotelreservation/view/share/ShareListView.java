@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 
 import com.example.hotelreservation.R;
 import com.example.hotelreservation.controller.DownloadImageTask;
+import com.example.hotelreservation.model.Constant;
 import com.example.hotelreservation.model.Data;
 import com.example.hotelreservation.model.Myroom;
 
@@ -25,7 +26,7 @@ public class ShareListView extends ArrayAdapter<Myroom> {
     int resource;
     ArrayList<Myroom> myrooms;
     Data[] data = new Data[1];
-    String urladdress = "192.168.1.102/Hotel/Pengguna/confirm/";
+    String urladdress = Constant.BASE_URL + "Share/confirm/";
     public ShareListView(Context context, int resource, ArrayList<Myroom> myrooms) {
         super(context, resource , myrooms);
         this.context=context;

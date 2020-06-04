@@ -18,6 +18,7 @@ import com.example.hotelreservation.R;
 import com.example.hotelreservation.controller.Connector;
 import com.example.hotelreservation.controller.DataPackager;
 import com.example.hotelreservation.controller.DownloadImageTask;
+import com.example.hotelreservation.model.Constant;
 import com.example.hotelreservation.model.Data;
 import com.example.hotelreservation.model.Myroom;
 
@@ -35,7 +36,7 @@ public class MyroomListView extends ArrayAdapter<Myroom> {
     int resource;
     ArrayList<Myroom> myrooms;
     Data[] data = new Data[1];
-    String urladdress = "192.168.1.102/Hotel/Pengguna/confirm/";
+    String urladdress = Constant.BASE_URL + "Myroom/confirm/";
     public MyroomListView(Context context, int resource, ArrayList<Myroom> myrooms) {
         super(context, resource , myrooms);
         this.context=context;
@@ -62,25 +63,29 @@ public class MyroomListView extends ArrayAdapter<Myroom> {
 
         viewHolder.tvw1.setText(myroom.getNama());
         viewHolder.tvw2.setText(myroom.getAlamat());
-        viewHolder.tvw3.setText(myroom.getTanggal());
+        viewHolder.tvw3.setText(myroom.getCheckin());
         new DownloadImageTask(viewHolder.ivw).execute(myroom.getImagepath());
         if(myroom.getCurrentstatus().equals("N")){
             r.setAlpha(0.4F);
             r.setBackgroundColor(Color.GRAY);
             viewHolder.btn.setText("Not Available");
             r.setOnClickListener(null);
-        }else if(myroom.getCurrentstatus().equals("E")){
-            r.setAlpha(0.4F);
-            r.setBackgroundColor(Color.GRAY);
-            viewHolder.btn.setText("Expired");
-            r.setOnClickListener(null);
         }else{
             if(myroom.getCheckinstats().equals("1")){
                 viewHolder.btn.setText("MASUK");
-            }else{
+            }else if(myroom.getCheckinstats().equals("2")){
+                viewHolder.btn.setText("Checkout In Progress");
+            }
+            else{
                 viewHolder.btn.setText("CHECK IN");
             }
         }
+//        else if(myroom.getCurrentstatus().equals("E")){
+//            r.setAlpha(0.4F);
+//            r.setBackgroundColor(Color.GRAY);
+//            viewHolder.btn.setText("Expired");
+//            r.setOnClickListener(null);
+//        }
 //        viewHolder.btn.setOnClickListener(new View.OnClickListener(){
 //            @Override
 //            public void onClick(View v) {

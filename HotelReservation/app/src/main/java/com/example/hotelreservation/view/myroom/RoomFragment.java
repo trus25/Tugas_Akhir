@@ -22,6 +22,7 @@ import com.example.hotelreservation.controller.CaptureActivityAnyOrientation;
 import com.example.hotelreservation.controller.Connector;
 import com.example.hotelreservation.controller.DataPackager;
 import com.example.hotelreservation.controller.SessionManagement;
+import com.example.hotelreservation.model.Constant;
 import com.example.hotelreservation.model.Data;
 import com.example.hotelreservation.model.Myroom;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -41,7 +42,7 @@ import java.net.HttpURLConnection;
 import java.util.ArrayList;
 
 public class RoomFragment extends Fragment{
-    String urladdress="http://192.168.1.102/Hotel/Pengguna/getMyroom/";
+    String urladdress=Constant.BASE_URL + "Myroom/getMyroom/";
     ListView listView;
     ArrayList<Myroom> arrayList;
     BufferedInputStream is;
@@ -75,16 +76,18 @@ public class RoomFragment extends Fragment{
                 Button checkbutton=view.findViewById(R.id.buttonroom);
                 getposition = position;
 
-                if(myroom.getCheckinstats().equals("1")){
+                if(myroom.getCheckinstats().equals("1") || myroom.getCheckinstats().equals("2")){
                     Intent intent = new Intent(getContext(), MyroomActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putString("id", myroom.getIdkmr());
                     intent.putExtras(bundle);
                     intent.putExtra("idtr", myroom.getIdtr());
+                    intent.putExtra("idht", myroom.getIdht());
                     intent.putExtra("nomor", myroom.getNomor());
                     intent.putExtra("nama", myroom.getNama());
                     intent.putExtra("image", myroom.getImagepath());
                     intent.putExtra("status", "owner");
+                    intent.putExtra("checkinstats", myroom.getCheckinstats());
                     startActivity(intent);
                 }else{
                     //for fragment you need to instantiate integrator in this way
@@ -212,10 +215,10 @@ public class RoomFragment extends Fragment{
                 scanContent = scanningResult.getContents().toString();
                 scanFormat = scanningResult.getFormatName().toString();
                 Myroom myroom = arrayList.get(getposition);
-                QRCODE_STRING = id+"-"+myroom.getIdht()+"-"+myroom.getNomor();
+                QRCODE_STRING = myroom.getIdht();
                 if(scanContent.equals(QRCODE_STRING)){
-                    String urlcheckin="http://192.168.1.102/Hotel/Pengguna/confirm/";
-                    postdata[0]= new Data("idkamar", myroom.getIdkmr());
+                    String urlcheckin= Constant.BASE_URL + "Myroom/confirm/";
+                    postdata[0]= new Data("idtransaksi", myroom.getIdtr());
                     String result = send(urlcheckin);
                     if(result != null)
                     {
@@ -226,14 +229,16 @@ public class RoomFragment extends Fragment{
                             bundle.putString("id", myroom.getIdkmr());
                             intent.putExtras(bundle);
                             intent.putExtra("idtr", myroom.getIdtr());
+                            intent.putExtra("idht", myroom.getIdht());
                             intent.putExtra("nomor", myroom.getNomor());
                             intent.putExtra("nama", myroom.getNama());
                             intent.putExtra("image", myroom.getImagepath());
                             intent.putExtra("status", "owner");
+                            intent.putExtra("checkinstats", myroom.getCheckinstats());
                             startActivity(intent);
 
                         }else{
-                            Toast.makeText(getContext(),"Check-in Error",Toast.LENGTH_LONG).show();
+                            Toast.makeText(getContext(),"Check-in Erro" ,Toast.LENGTH_LONG).show();
                         }
                     }else
                     {

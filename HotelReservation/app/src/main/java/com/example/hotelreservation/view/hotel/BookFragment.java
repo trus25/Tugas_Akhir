@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.hotelreservation.R;
 import com.example.hotelreservation.controller.Connector;
+import com.example.hotelreservation.model.Constant;
 import com.example.hotelreservation.model.Hotel;
 
 import org.json.JSONArray;
@@ -29,7 +30,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class BookFragment extends Fragment {
-    String urladdress="http://192.168.1.102/Hotel/Pengguna/gethotel/";
+    String urladdress= Constant.BASE_URL + "Hotel/gethotel/";
     String harga;
     ListView listView;
     ArrayList<Hotel> arrayList;

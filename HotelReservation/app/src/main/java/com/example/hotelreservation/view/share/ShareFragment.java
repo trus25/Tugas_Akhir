@@ -20,6 +20,7 @@ import com.example.hotelreservation.R;
 import com.example.hotelreservation.controller.Connector;
 import com.example.hotelreservation.controller.DataPackager;
 import com.example.hotelreservation.controller.SessionManagement;
+import com.example.hotelreservation.model.Constant;
 import com.example.hotelreservation.model.Data;
 import com.example.hotelreservation.model.Myroom;
 import com.example.hotelreservation.view.myroom.MyroomActivity;
@@ -39,7 +40,7 @@ import java.net.HttpURLConnection;
 import java.util.ArrayList;
 
 public class ShareFragment extends Fragment {
-    String urladdress="http://192.168.1.102/Hotel/Pengguna/getSharedRoom/";
+    String urladdress= Constant.BASE_URL + "Share/getSharedRoom/";
     ListView listView;
     ArrayList<Myroom> arrayList;
     BufferedInputStream is;

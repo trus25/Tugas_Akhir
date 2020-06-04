@@ -3,17 +3,11 @@ package com.example.hotelreservation.view.hotel;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,16 +16,10 @@ import com.example.hotelreservation.controller.Connector;
 import com.example.hotelreservation.controller.DataPackager;
 import com.example.hotelreservation.controller.DownloadImageTask;
 import com.example.hotelreservation.controller.MyEditTextDatePicker;
-import com.example.hotelreservation.midtrans.MidtransActivity;
-import com.example.hotelreservation.midtrans.ReviewActivity;
+import com.example.hotelreservation.model.Constant;
+import com.example.hotelreservation.view.midtrans.ReviewActivity;
 import com.example.hotelreservation.model.Data;
 import com.example.hotelreservation.model.Hotel;
-import com.example.hotelreservation.model.Kamar;
-import com.example.hotelreservation.model.Myroom;
-import com.example.hotelreservation.view.MainActivity;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -50,8 +38,7 @@ public class HoteldetailActivity extends AppCompatActivity {
     private int position;
     private ArrayList<Hotel> hotels;
     private Data[] postdata= new Data[3];
-
-    private String urladdresskamar = "http://192.168.1.102/Hotel/Pengguna/getAvailableRoom/";
+    private String urladdresskamar = Constant.BASE_URL + "Hotel/getAvailableRoom/";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

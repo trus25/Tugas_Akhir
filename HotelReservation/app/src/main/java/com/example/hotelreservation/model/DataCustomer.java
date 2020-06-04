@@ -26,7 +26,7 @@ public class DataCustomer {
 
     public static TransactionRequest transactionRequest(String id, int price, int qty, String name){
         UserDetail userDetail = LocalDataHandler.readObject("user_details", UserDetail.class);
-        if (userDetail == null) {
+//        if (userDetail == null) {
             userDetail = new UserDetail();
             userDetail.setUserFullName("Farhan Zuhdi");
             userDetail.setEmail("fzuhdi50@gmail.com");
@@ -43,7 +43,7 @@ public class DataCustomer {
             userAddresses.add(userAddress);
             userDetail.setUserAddresses(userAddresses);
             LocalDataHandler.saveObject("user_details", userDetail);
-        }
+//        }
 
         TransactionRequest request = new TransactionRequest(System.currentTimeMillis() + " ", price*qty);
         request.setCustomerDetails(customerDetails());

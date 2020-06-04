@@ -73,7 +73,7 @@
 
         <Button
             android:id="@+id/buttonroom"
-            android:layout_width="117dp"
+            android:layout_width="wrap_content"
             android:layout_height="35dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
@@ -81,6 +81,8 @@
             android:layout_marginBottom="0dp"
             android:background="#FF613F"
             android:text="Check In"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
             android:textColor="@color/white"
             android:textStyle="bold"
             android:focusable="false"/>

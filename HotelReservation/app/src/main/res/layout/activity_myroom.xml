@@ -75,8 +75,13 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
                             android:textColor="#111111"
                             android:textSize="20dp"
                             android:text="1" />
-
                     </RelativeLayout>
+                    <Button
+                        android:id="@+id/btnlift"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textColor="#111111"
+                        android:text="Lift Access" />
                 </LinearLayout>
             </RelativeLayout>
 
@@ -151,6 +156,16 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
                     android:textSize="20dp"
                     android:text="Listrik"
                     android:paddingEnd="@dimen/sixteen_dp"/>
+
+                <Switch
+                    android:id="@+id/switch2"
+                    android:layout_marginTop="16dp"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:gravity="left|center"
+                    android:textSize="20dp"
+                    android:text="Kipas"
+                    android:paddingEnd="@dimen/sixteen_dp"/>
             </LinearLayout>
 
             <View
@@ -221,8 +236,9 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/list_share_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"
+                    android:layout_height="100dp"
                     android:layout_below="@id/share_details_container"
                     android:layout_marginLeft="@dimen/sixteen_dp"
                     android:layout_marginRight="@dimen/sixteen_dp">
@@ -233,8 +249,24 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
                         android:layout_height="wrap_content"
                         />
                 </LinearLayout>
-            </RelativeLayout>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/list_share_layout"
+                    android:layout_marginTop="@dimen/sixteen_dp"
+                    android:layout_marginLeft="@dimen/sixteen_dp"
+                    android:layout_marginRight="@dimen/sixteen_dp">
+                    <Button
+                        android:id="@+id/btncheckout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/red"
+                        android:textColor="#111111"
+                        android:text="Checkout" />
+                </LinearLayout>
+
+            </RelativeLayout>
 
         </RelativeLayout>
     </androidx.core.widget.NestedScrollView>

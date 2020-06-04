@@ -2,38 +2,46 @@ package com.example.hotelreservation.view.myroom;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.media.Image;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.hotelreservation.R;
+import com.example.hotelreservation.controller.CaptureActivityAnyOrientation;
 import com.example.hotelreservation.controller.Connector;
 import com.example.hotelreservation.controller.DataPackager;
 import com.example.hotelreservation.controller.DownloadImageTask;
 import com.example.hotelreservation.controller.SessionManagement;
-import com.example.hotelreservation.midtrans.ReviewActivity;
+import com.example.hotelreservation.model.Constant;
 import com.example.hotelreservation.model.Data;
-import com.example.hotelreservation.model.Kamar;
 import com.example.hotelreservation.model.Myroom;
 import com.example.hotelreservation.model.Share;
+import com.example.hotelreservation.view.MainActivity;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -46,26 +54,38 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 public class MyroomActivity extends AppCompatActivity {
+    private static final String CHANNEL_ID = "personal";
+    private static final int NOTIFICATION_ID = 001;
+    private boolean NOTIFICATION;
     TextView nomor,nama;
     ImageView picture;
     RecyclerView recyclerView;
+    Switch sw, sw2;
     private RecyclerView.LayoutManager layoutManager;
     EditText username;
     RelativeLayout tv;
     Data[] postdata = new Data[1];
     Data[] postsharer = new Data[1];
     Data[] addshare = new Data[2];
-    Button btn,btnshare;
-    String pintu, currentuser;
-    String listrik;
-    String urladdress="http://192.168.1.102/Hotel/Pengguna/roomcond";
-    String urlgetsharer="http://192.168.1.102/Hotel/Pengguna/getRoomSharer/";
-    String urladdshare ="http://192.168.1.102/Hotel/Pengguna/addShare/";
+    Data[] checkout = new Data[1];
+    Button btn,btnshare,btncheckout, btnlift;
+    String currentuser, idtr, idht;
+    String pintu, listrik, kipas;
+    String urladdress=Constant.BASE_URL + "Myroom/roomcond";
+    String urlgetsharer=Constant.BASE_URL + "Myroom/getRoomSharer/";
+    String urladdshare =Constant.BASE_URL + "Myroom/addShare/";
+    String checkinstats;
+    Data[] chkhandler = new Data[1];
+    String scanContent;
+    String scanFormat;
+    String QRCODE_STRING;
     ArrayList<Share> arrayList = new ArrayList<Share>();
-
-    final Handler handler = new Handler();
+    Handler handler = new Handler();
+    Runnable runnable;
+    int delay = 10*1000; //Delay for 15 seconds.  One second = 1000 milliseconds.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,11 +102,15 @@ public class MyroomActivity extends AppCompatActivity {
         picture = (ImageView)findViewById(R.id.hotelpicroom);
         btn = (Button)findViewById(R.id.buttonpintu);
         btnshare = (Button)findViewById(R.id.button_share);
+        btnlift = (Button)findViewById(R.id.btnlift);
         username = findViewById(R.id.tambah_sharer);
-        Switch sw = (Switch) findViewById(R.id.switch1);
+        sw = (Switch) findViewById(R.id.switch1);
         tv = (RelativeLayout) findViewById(R.id.hiddenlayout);
+        sw2 = (Switch) findViewById(R.id.switch2);
+        btncheckout = (Button) findViewById(R.id.btncheckout);
         SessionManagement sessionManagement = new SessionManagement(this);
         this.currentuser = String.valueOf(sessionManagement.getUsername());
+        chkhandler[0] = new Data("idtransaksi", idtr);
 
 
         Intent intent = getIntent();
@@ -94,10 +118,12 @@ public class MyroomActivity extends AppCompatActivity {
         Bundle bundle = this.getIntent().getExtras();
         String aid = bundle.getString("id");
         String anama= intent.getStringExtra("nama");
-        String idtr = intent.getStringExtra("idtr");
+        idtr = intent.getStringExtra("idtr");
+        idht = intent.getStringExtra("idht");
         String nomorkamar = intent.getStringExtra("nomor");
         String aimage = intent.getStringExtra("image");
         String astatus = intent.getStringExtra("status");
+        checkinstats = intent.getStringExtra("checkinstats");
 
         if(astatus.equals("shared")){
             setLayoutInvisible();
@@ -113,18 +139,34 @@ public class MyroomActivity extends AppCompatActivity {
         collectData(this,result);
 
 
-
-//        btn.setText("TERBUKA");
-        if(!pintu.equals("0")) {
-            String url = "http://192.168.1.102/Hotel/Pengguna/setPintu/";
-            send(url, postdata);
+        if(checkinstats.equals("2")){
+            btncheckout.setText("Checkout dalam progres");
+            btncheckout.setOnClickListener(null);
         }
-        btn.setText("BUKA");
-        btn.setBackgroundColor(Color.parseColor("#4CAF50"));
-        if(listrik.equals("0")){
-            sw.setChecked(false);
+//        btn.setText("TERBUKA");
+        if(pintu.equals("0")) {
+            btn.setText("BUKA");
+            btn.setBackgroundColor(Color.parseColor("#4CAF50"));
         }else{
-            sw.setChecked(true);
+            btn.setText("TUTUP");
+            btn.setBackgroundColor(Color.parseColor("#f44336"));
+        }
+
+        if(checkinstats.equals("1")){
+            if(listrik.equals("0")){
+                sw.setChecked(false);
+            }else{
+                sw.setChecked(true);
+            }
+
+            if(listrik.equals("0")){
+                sw2.setChecked(false);
+            }else{
+                sw.setChecked(false);
+            }
+        }else{
+            sw.setClickable(false);
+            sw2.setClickable(false);
         }
         nama.setText(anama);
         nomor.setText(nomorkamar);
@@ -140,26 +182,55 @@ public class MyroomActivity extends AppCompatActivity {
 
         sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                String url = "http://192.168.1.102/Hotel/Pengguna/setLampu/";
-                send(url, postdata);
+                if(isChecked){
+                    String url = Constant.BASE_URL + "Myroom/setLampu/1";
+                    send(url, postdata);
+                }else{
+                    String url = Constant.BASE_URL + "Myroom/setLampu/0";
+                    send(url, postdata);
+                }
+
+            }
+        });
+
+        sw2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    String url = Constant.BASE_URL + "Myroom/setKipas/1";
+                    send(url, postdata);
+                }else {
+                    String url = Constant.BASE_URL + "Myroom/setKipas/0";
+                    send(url, postdata);
+                }
             }
         });
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    String url = "http://192.168.1.102/Hotel/Pengguna/setPintu/";
-                    send(url,postdata);
-                    btn.setText("TUTUP");
-                    btn.setBackgroundColor(Color.parseColor("#f44336"));
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            // Do something after 5s = 5000ms
-                            send(url,postdata);
-                            btn.setText("BUKA");
-                            btn.setBackgroundColor(Color.parseColor("#4CAF50"));
-                        }
-                    }, 2000);
+                    if(btn.getText().toString().equals("BUKA")) {
+                        String url = Constant.BASE_URL + "Myroom/setPintu/1";
+                        send(url,postdata);
+                        btn.setText("TUTUP");
+                        sw.setChecked(true);
+                        sw2.setChecked(true);
+                        btn.setBackgroundColor(Color.parseColor("#f44336"));
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                // Do something after 5s = 5000ms
+                                String url = Constant.BASE_URL + "Myroom/setPintu/0";
+                                send(url, postdata);
+                                btn.setText("BUKA");
+                                btn.setBackgroundColor(Color.parseColor("#4CAF50"));
+                            }
+                        }, 2000);
+                    }else if(btn.getText().toString().equals("TUTUP")){
+                        String url = Constant.BASE_URL + "Myroom/setPintu/0";
+                        send(url, postdata);
+                        btn.setText("BUKA");
+                        btn.setBackgroundColor(Color.parseColor("#4CAF50"));
+                    }
             }
         });
 
@@ -193,6 +264,67 @@ public class MyroomActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Isi username yang akan diberikan akses!", Toast.LENGTH_SHORT).show();
                 }
 
+            }
+        });
+
+        btncheckout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(checkinstats.equals("1")){
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(MyroomActivity.this);
+                    alertDialog.setTitle("Konfirmasi Checkout");
+                    alertDialog.setMessage("Apakah yakin ingin checkout dari kamar hotel?");
+                    alertDialog.setPositiveButton("CANCEL", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+                    alertDialog.setNegativeButton("YES", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // DO SOMETHING HERE
+                            String url = Constant.BASE_URL + "Myroom/checkout/";
+                            checkout[0] = new Data("idtransaksi", idtr);
+                            String result = send(url, checkout);
+                            if(result.equals("success")){
+                                Toast.makeText(getApplicationContext(), "Checkout berhasil", Toast.LENGTH_SHORT).show();
+                                checkinstats="2";
+                                btncheckout.setText("Checkout In Progress");
+                                sw.setChecked(false);
+                                sw2.setChecked(false);
+                                sw.setClickable(false);
+                                sw2.setClickable(false);
+                                btncheckout.setOnClickListener(null);
+                            }else{
+                                Toast.makeText(getApplicationContext(), "Checkout gagal", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                    AlertDialog dialog = alertDialog.create();
+                    dialog.show();
+                }else{
+                    Toast.makeText(getApplicationContext(), "Tunggu konfirmasi checkout dari petugas hotel", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+
+        btnlift.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //for fragment you need to instantiate integrator in this way
+                IntentIntegrator integrator = new IntentIntegrator(MyroomActivity.this);
+                integrator.setPrompt("Scan");
+                integrator.setBeepEnabled(true);
+
+//                enable the following line if you want QR code
+                integrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES);
+
+                integrator.setCaptureActivity(CaptureActivityAnyOrientation.class);
+                integrator.setOrientationLocked(true);
+                integrator.setBarcodeImageEnabled(true);
+                integrator.initiateScan();
             }
         });
     }
@@ -275,6 +407,7 @@ public class MyroomActivity extends AppCompatActivity {
                 JSONObject listmyroom = jo.getJSONObject("roomcond");
                 pintu = listmyroom.getString("pintukamar");
                 listrik = listmyroom.getString("lampukamar");
+                kipas = listmyroom.getString("kipaskamar");
             }
             catch (Exception ex)
             {
@@ -314,6 +447,138 @@ public class MyroomActivity extends AppCompatActivity {
         {
             //NO SUCCESS
             Toast.makeText(c,response,Toast.LENGTH_LONG).show();
+        }
+    }
+
+
+    @Override
+    protected void onResume() {
+        //start handler as activity become visible
+        NOTIFICATION = false;
+        handler.postDelayed( runnable = new Runnable() {
+            public void run() {
+                //do something
+                String url = Constant.BASE_URL + "Myroom/chkhandler/";
+                chkhandler[0] = new Data("idtransaksi", idtr);
+                String result = send(url,chkhandler);
+                if(result.equals("wait")){
+                    if(!checkinstats.equals("2")){
+                        sw.setChecked(false);
+                        sw2.setChecked(false);
+                        sw.setClickable(false);
+                        sw2.setClickable(false);
+                        btncheckout.setText("Checkout dalam progres");
+                        btncheckout.setOnClickListener(null);
+                        checkinstats = "2";
+                    }
+                    if(!NOTIFICATION){
+                        displayNotification();
+                        NOTIFICATION = true;
+                    }
+                }else if(result.equals("true")){
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(MyroomActivity.this);
+                    alertDialog.setTitle("Announcement");
+                    alertDialog.setMessage("Masa singgah anda telah berakhir!");
+//                    alertDialog.setPositiveButton("CANCEL", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            dialog.cancel();
+//                        }
+//                    });
+                    alertDialog.setNegativeButton("OKE", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // DO SOMETHING HERE
+                            Intent intent = new Intent(MyroomActivity.this, MainActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                            finish();
+                        }
+                    });
+                    AlertDialog dialog = alertDialog.create();
+                    dialog.show();
+                }
+                handler.postDelayed(runnable, delay);
+
+            }
+        }, delay);
+
+        super.onResume();
+    }
+
+// If onPause() is not included the threads will double up when you
+// reload the activity
+
+    @Override
+    protected void onPause() {
+//        handler.removeCallbacks(runnable); //stop handler when activity not visible
+        super.onPause();
+    }
+
+    public void displayNotification(){
+        createNotificationChannel();
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.drawable.notification_icon)
+                .setContentTitle("Checkout Notification")
+                .setContentText("Pengunjung yang terhormat. Masa singgah anda telah habis, mohon untuk segera mengurus checkout dengan petugas")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        notificationManager.notify(NOTIFICATION_ID, builder.build());
+    }
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Personal Notification";
+            String description = "include all the personal notifications";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+
+    }
+
+//    @Override
+//    protected void onDestroy() {
+//        handler.removeCallbacks(runnable); //stop handler when activity not visible
+//        super.onDestroy();
+//    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (scanningResult != null) {
+            if (scanningResult.getContents() != null) {
+                scanContent = scanningResult.getContents().toString();
+                scanFormat = scanningResult.getFormatName().toString();
+                StringTokenizer st = new StringTokenizer(scanContent, "|");
+                String idhotel = st.nextToken();
+                String idlift = st.nextToken();
+                String lokasilift = st.nextToken();
+                QRCODE_STRING = idht;
+                if(idhotel.equals(QRCODE_STRING)){
+                    String urlcheckin= Constant.BASE_URL + "Hotel/setLift/1";
+                    postdata[0]= new Data("idlift", idlift);
+                    new Thread(new Runnable() {
+                        @Override public void run() {
+                            // background code
+                           send(urlcheckin, postdata);
+                        } }).start();
+                    Toast.makeText(this, "Lokasi Lift: " + lokasilift + "  Status: Aktif", Toast.LENGTH_SHORT).show();
+
+                }else if(!idhotel.equals(QRCODE_STRING)){
+                    Toast.makeText(this, "Anda tidak memiliki akses lift", Toast.LENGTH_SHORT).show();
+                }
+            }
+            Toast.makeText(this, scanContent + "   type:" + scanFormat, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Nothing scanned", Toast.LENGTH_SHORT).show();
         }
     }
 }
