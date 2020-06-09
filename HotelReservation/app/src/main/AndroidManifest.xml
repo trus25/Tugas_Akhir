@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.hotelreservation" >
+    package="com.example.hotelreservation">
 
     <uses-sdk tools:overrideLibrary="com.google.zxing.client.android" />
 
@@ -16,9 +16,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
-        tools:replace="android:usesCleartextTraffic" >
-        <activity android:name=".view.midtrans.ReviewActivity" >
-        </activity>
+        tools:replace="android:usesCleartextTraffic">
+        <activity android:name=".view.login.RegisterActivity"></activity>
+        <activity android:name=".view.midtrans.ReviewActivity"></activity>
         <activity android:name=".view.midtrans.MidtransActivity" />
         <activity
             android:name=".view.myroom.MyroomActivity"
@@ -28,7 +28,7 @@
             android:name=".view.hotel.HoteldetailActivity"
             android:parentActivityName=".view.MainActivity"
             android:theme="@style/AppThemeAction" />
-        <activity android:name=".view.login.LoginActivity" >
+        <activity android:name=".view.login.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

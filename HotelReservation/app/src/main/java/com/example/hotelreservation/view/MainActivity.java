@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         View headerView = navigationView.getHeaderView(0);
         TextView navUsername = (TextView) headerView.findViewById(R.id.username);
         SessionManagement sessionManagement = new SessionManagement(MainActivity.this);
-        String username = "hello, " + sessionManagement.getUsername();
+        String username = "hello, " + sessionManagement.getUserama();
         navUsername.setText(username);
 
 

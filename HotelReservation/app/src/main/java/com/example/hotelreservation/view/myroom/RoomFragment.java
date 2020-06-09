@@ -131,7 +131,8 @@ public class RoomFragment extends Fragment{
                             listmyroom.getString("nama"),
                             listmyroom.getString("alamat"),
                             listmyroom.getString("image"),
-                            listmyroom.getString("nomor")
+                            listmyroom.getString("nomor"),
+                            listmyroom.getString("qrcode")
                     ));
                 }
             }
@@ -215,7 +216,7 @@ public class RoomFragment extends Fragment{
                 scanContent = scanningResult.getContents().toString();
                 scanFormat = scanningResult.getFormatName().toString();
                 Myroom myroom = arrayList.get(getposition);
-                QRCODE_STRING = myroom.getIdht();
+                QRCODE_STRING = myroom.getQrcode();
                 if(scanContent.equals(QRCODE_STRING)){
                     String urlcheckin= Constant.BASE_URL + "Myroom/confirm/";
                     postdata[0]= new Data("idtransaksi", myroom.getIdtr());
@@ -238,7 +239,7 @@ public class RoomFragment extends Fragment{
                             startActivity(intent);
 
                         }else{
-                            Toast.makeText(getContext(),"Check-in Erro" ,Toast.LENGTH_LONG).show();
+                            Toast.makeText(getContext(),"Check-in Error" ,Toast.LENGTH_LONG).show();
                         }
                     }else
                     {

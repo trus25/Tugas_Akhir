@@ -1,5 +1,8 @@
 package com.example.hotelreservation.model;
 
+import android.content.Context;
+
+import com.example.hotelreservation.controller.SessionManagement;
 import com.midtrans.sdk.corekit.core.LocalDataHandler;
 import com.midtrans.sdk.corekit.core.TransactionRequest;
 import com.midtrans.sdk.corekit.models.BankType;
@@ -24,14 +27,21 @@ public class DataCustomer {
         return cd;
     }
 
-    public static TransactionRequest transactionRequest(String id, int price, int qty, String name){
+    public static TransactionRequest transactionRequest(Context c, String id, int price, int qty, String name){
         UserDetail userDetail = LocalDataHandler.readObject("user_details", UserDetail.class);
-//        if (userDetail == null) {
+        SessionManagement sessionManagement = new SessionManagement(c);
+        String username = sessionManagement.getUsername();
+        String userid = sessionManagement.getSession()+"-"+username;
+        String nama = sessionManagement.getUserama();
+        String email = sessionManagement.getUserEmail();
+        String phone = sessionManagement.getUserPhone();
+
+        if (userDetail == null || !userDetail.getUserId().equals(userid)) {
             userDetail = new UserDetail();
-            userDetail.setUserFullName("Farhan Zuhdi");
-            userDetail.setEmail("fzuhdi50@gmail.com");
-            userDetail.setPhoneNumber("08123456789");
-            userDetail.setUserId("bangtiray-6789");
+            userDetail.setUserFullName(nama);
+            userDetail.setEmail(email);
+            userDetail.setPhoneNumber(phone);
+            userDetail.setUserId(userid);
 
             ArrayList<UserAddress> userAddresses = new ArrayList<>();
             UserAddress userAddress = new UserAddress();
@@ -43,7 +53,7 @@ public class DataCustomer {
             userAddresses.add(userAddress);
             userDetail.setUserAddresses(userAddresses);
             LocalDataHandler.saveObject("user_details", userDetail);
-//        }
+        }
 
         TransactionRequest request = new TransactionRequest(System.currentTimeMillis() + " ", price*qty);
         request.setCustomerDetails(customerDetails());

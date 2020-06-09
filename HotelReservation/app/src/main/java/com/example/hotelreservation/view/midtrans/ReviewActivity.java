@@ -4,7 +4,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -42,6 +45,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
@@ -52,9 +56,7 @@ public class ReviewActivity extends AppCompatActivity implements TransactionFini
     private ImageView hotelimage;
     private static final String TAG = "transactionresult";
     private String aid,anama,aharga,aidkamar,anomorkamar,aalamat,aimage, adurasi, atglcheckin;
-    private int atotalharga;
-    private static String PHONE = "1232131231";
-    private static String EMAIL = "test1@gmail.com";
+    int atotalharga;
     Data[] postdata = new Data[6];
 
 
@@ -119,8 +121,8 @@ public class ReviewActivity extends AppCompatActivity implements TransactionFini
         hotelname.setText(anama);
         SessionManagement sessionManagement = new SessionManagement(this);
         nama.setText(sessionManagement.getUsername());
-        email.setText(EMAIL);
-        nohp.setText(PHONE);
+        email.setText(sessionManagement.getUserEmail());
+        nohp.setText(sessionManagement.getUserPhone());
         alamat.setText(aalamat);
         harga.setText(currencyFormat(aharga));
         hargatotal.setText(currencyFormat(String.valueOf(atotalharga)));
@@ -133,7 +135,9 @@ public class ReviewActivity extends AppCompatActivity implements TransactionFini
                 if(spinner.getSelectedItem().toString().equals("Kamar Habis")){
                     Toast.makeText(getApplicationContext(), "Kamar habis, mohon pilih tanggal lain", Toast.LENGTH_SHORT).show();
                 }else {
-                    actionButton();
+//                    if(isConnected()){
+                        actionButton();
+//                    }
                 }
             }
         });
@@ -178,6 +182,7 @@ public class ReviewActivity extends AppCompatActivity implements TransactionFini
 
     private void actionButton(){
         MidtransSDK.getInstance().setTransactionRequest(DataCustomer.transactionRequest(
+                this,
                 "1",
                  Integer.parseInt(aharga),
                  Integer.parseInt(adurasi),
@@ -310,4 +315,36 @@ public class ReviewActivity extends AppCompatActivity implements TransactionFini
 
         return null;
     }
+
+//    public boolean isConnected() {
+//        try {
+//            ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+//            NetworkInfo netInfo = cm.getActiveNetworkInfo();
+//
+//            if (netInfo != null && netInfo.isConnected()) {
+//                // Network is available but check if we can get access from the
+//                // network.
+//                URL url = new URL("192.168.1.103");
+//                HttpURLConnection urlc = (HttpURLConnection) url
+//                        .openConnection();
+//                urlc.setRequestProperty("Connection", "close");
+//                urlc.setConnectTimeout(2000); // Timeout 2 seconds.
+//                urlc.connect();
+//
+//                if (urlc.getResponseCode() == 200) // Successful response.
+//                {
+//                    return true;
+//                } else {
+//                    Log.d("NO INTERNET", "NO INTERNET");
+//                    Toast.makeText(this, "URL down", Toast.LENGTH_SHORT).show();
+//                    return false;
+//                }
+//            } else {
+//                Toast.makeText(this, "No Internet Connection", Toast.LENGTH_SHORT).show();
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return false;
+//    }
 }

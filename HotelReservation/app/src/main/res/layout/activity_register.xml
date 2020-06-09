@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     style="@style/loginParent"
-    tools:context=".view.login.LoginActivity">
+    tools:context=".view.login.RegisterActivity">
     <ScrollView
         style="@style/parent">
 
@@ -66,11 +66,11 @@
 
                         <TextView
                             style="@style/headerTextPrimary"
-                            android:text="Login"
+                            android:text="Register"
                             android:layout_marginTop="@dimen/loginViewsMargin"/>
 
                         <EditText
-                            android:id="@+id/etUsername"
+                            android:id="@+id/rgUsername"
                             style="@style/modifiedEditText"
                             android:inputType="textEmailAddress"
                             android:maxLines="1"
@@ -81,7 +81,7 @@
 
 
                         <EditText
-                            android:id="@+id/etPassword"
+                            android:id="@+id/rgPassword"
                             style="@style/modifiedEditText"
                             android:hint="@string/login_password_hint"
                             android:maxLines="1"
@@ -90,24 +90,65 @@
                             android:drawableLeft="@drawable/ic_lock_outline_black_24dp"
                             android:drawablePadding="5dp"/>
 
+                        <EditText
+                            android:id="@+id/rgPasswordCfrm"
+                            style="@style/modifiedEditText"
+                            android:hint="Confirm Passowrd"
+                            android:maxLines="1"
+                            android:inputType="textPassword"
+                            android:layout_marginTop="@dimen/loginViewsMargin"
+                            android:drawableLeft="@drawable/ic_lock_outline_black_24dp"
+                            android:drawablePadding="5dp"/>
+
+                        <EditText
+                            android:id="@+id/rgNama"
+                            style="@style/modifiedEditText"
+                            android:inputType="textEmailAddress"
+                            android:maxLines="1"
+                            android:hint="Nama Lengkap"
+                            android:layout_marginTop="@dimen/loginViewsMargin"
+                            android:drawableLeft="@drawable/ic_account_circle_black_24dp"
+                            android:drawablePadding="5dp"/>
+
+                        <EditText
+                            android:id="@+id/rgEmail"
+                            style="@style/modifiedEditText"
+                            android:inputType="textEmailAddress"
+                            android:maxLines="1"
+                            android:hint="Email"
+                            android:layout_marginTop="@dimen/loginViewsMargin"
+                            android:drawableLeft="@drawable/ic_email_black_24dp"
+                            android:drawablePadding="5dp"/>
+
+
+                        <EditText
+                            android:id="@+id/rgPhone"
+                            style="@style/modifiedEditText"
+                            android:hint="Phone Number"
+                            android:maxLines="1"
+                            android:layout_marginTop="@dimen/loginViewsMargin"
+                            android:drawableLeft="@drawable/ic_phone_android_black_24dp"
+                            android:drawablePadding="5dp"/>
+
+
                         <Button
-                            android:id="@+id/btnLogin"
+                            android:id="@+id/btnRegister"
                             style="@style/loginButton"
-                            android:text="Login"
+                            android:text="Register"
                             android:layout_gravity="center_horizontal"
-                            android:layout_marginTop="@dimen/loginViewsMargin" />
+                            android:layout_marginTop="@dimen/loginViewsMargin"
+                            android:drawablePadding="5dp"/>
 
                         <TextView
-                            android:id="@+id/register"
-                            style="@style/parent"
-                            android:layout_marginTop="@dimen/loginViewsMargin"
-                            android:text="@string/login_signup_hint"
-                            android:textAlignment="center"
+                            android:id="@+id/regcancel"
                             android:clickable="true"
-                            android:focusable="false"
+                            style="@style/parent"
+                            android:textAlignment="center"
+                            android:textStyle="bold"
                             android:textColor="@color/primaryTextColor"
-                            android:textStyle="bold" />
-
+                            android:text="Already a member? Sign In"
+                            android:layout_marginTop="@dimen/loginViewsMargin"
+                            android:drawablePadding="5dp"/>
 
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>

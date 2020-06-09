@@ -19,6 +19,136 @@ android:orientation="vertical">
             android:layout_height="48dp"/>
     </RelativeLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:background="#fcfcfc"
+        android:gravity="center"
+        android:id="@+id/ll">
+        <LinearLayout
+            android:clipToPadding="false"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <androidx.cardview.widget.CardView
+                android:foreground="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:id="@+id/homemenu1"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_margin="10dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center">
+                    <ImageView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:src="@drawable/ic_bed"
+                        android:padding="10dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:layout_marginTop="10dp"
+                        android:text="Book a Room"/>
 
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+            <androidx.cardview.widget.CardView
+                android:foreground="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:id="@+id/homemenu2"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_margin="10dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center">
+                    <ImageView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:src="@drawable/ic_key"
+                        android:padding="10dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:layout_marginTop="10dp"
+                        android:text="My Room"/>
 
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+        <LinearLayout
+            android:clipToPadding="false"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <androidx.cardview.widget.CardView
+                android:foreground="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:id="@+id/homemenu3"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_margin="10dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center">
+                    <ImageView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:src="@drawable/ic_beach"
+                        android:padding="10dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:layout_marginTop="10dp"
+                        android:text="Shared Room"/>
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+            <androidx.cardview.widget.CardView
+                android:foreground="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:id="@+id/homemenu4"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_margin="10dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:padding="10dp"
+                        android:src="@drawable/ic_logout" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="Logout"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>

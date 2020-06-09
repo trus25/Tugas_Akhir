@@ -14,8 +14,9 @@ public class Myroom {
     private String alamat;
     private String imagepath;
     private String nomor;
+    private String qrcode;
 
-    public Myroom(String idtr, String idusr, String idht, String idkmr, String tanggal, String checkin, String checkout, String checkinstats, String currentstatus, String nama, String alamat, String imagepath, String nomor) {
+    public Myroom(String idtr, String idusr, String idht, String idkmr, String tanggal, String checkin, String checkout, String checkinstats, String currentstatus, String nama, String alamat, String imagepath, String nomor, String qrcode) {
         this.idtr = idtr;
         this.idusr = idusr;
         this.idht = idht;
@@ -29,6 +30,7 @@ public class Myroom {
         this.alamat = alamat;
         this.imagepath = imagepath;
         this.nomor = nomor;
+        this.qrcode = qrcode;
     }
 
     public String getIdtr() {
@@ -133,5 +135,13 @@ public class Myroom {
 
     public void setNomor(String nomor) {
         this.nomor = nomor;
+    }
+
+    public String getQrcode() {
+        return qrcode;
+    }
+
+    public void setQrcode(String qrcode) {
+        this.qrcode = qrcode;
     }
 }

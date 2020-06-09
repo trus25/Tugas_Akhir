@@ -106,7 +106,8 @@ public class ShareFragment extends Fragment {
                             listmyroom.getString("nama"),
                             listmyroom.getString("alamat"),
                             listmyroom.getString("image"),
-                            listmyroom.getString("nomor")
+                            listmyroom.getString("nomor"),
+                            listmyroom.getString("qrcode")
                     ));
                 }
             }

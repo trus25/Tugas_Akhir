@@ -212,8 +212,6 @@ public class MyroomActivity extends AppCompatActivity {
                         String url = Constant.BASE_URL + "Myroom/setPintu/1";
                         send(url,postdata);
                         btn.setText("TUTUP");
-                        sw.setChecked(true);
-                        sw2.setChecked(true);
                         btn.setBackgroundColor(Color.parseColor("#f44336"));
                         handler.postDelayed(new Runnable() {
                             @Override
