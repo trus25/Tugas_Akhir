@@ -55,7 +55,21 @@ public class ShareListView extends ArrayAdapter<Myroom> {
         viewHolder.tvw2.setText(myroom.getAlamat());
         viewHolder.tvw3.setText(myroom.getTanggal());
         new DownloadImageTask(viewHolder.ivw).execute(myroom.getImagepath());
-        viewHolder.btn.setText("MASUK");
+        if(myroom.getCurrentstatus().equals("N")){
+            r.setAlpha(0.4F);
+            r.setBackgroundColor(Color.GRAY);
+            viewHolder.btn.setText("Not Available");
+            r.setOnClickListener(null);
+        }else{
+            if(myroom.getCheckinstats().equals("1")){
+                viewHolder.btn.setText("MASUK");
+            }else if(myroom.getCheckinstats().equals("2")){
+                viewHolder.btn.setText("Checkout In Progress");
+            }
+            else{
+                viewHolder.btn.setText("CHECK IN");
+            }
+        }
 //        if(myroom.getCurrentstatus().equals("N")){
 //            r.setAlpha(0.4F);
 //            r.setBackgroundColor(Color.GRAY);

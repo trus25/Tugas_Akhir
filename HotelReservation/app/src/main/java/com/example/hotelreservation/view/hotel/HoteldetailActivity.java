@@ -38,7 +38,8 @@ public class HoteldetailActivity extends AppCompatActivity {
     private int position;
     private ArrayList<Hotel> hotels;
     private Data[] postdata= new Data[3];
-    private String urladdresskamar = Constant.BASE_URL + "Hotel/getAvailableRoom/";
+    private String urladdresskamar = Constant.BASE_URL + "getAvailableRoom/";
+    Connector connector = new Connector();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,7 +82,7 @@ public class HoteldetailActivity extends AppCompatActivity {
                     postdata[0]= new Data("idhotel",aid);
                     postdata[1]= new Data("checkin",tglcheckin.getText().toString());
                     postdata[2]= new Data("durasi",durasi.getText().toString());
-                    String result = send(urladdresskamar, postdata);
+                    String result = connector.send(urladdresskamar,postdata);
                     if(result.equals("null")){
                         Toast.makeText(getApplicationContext(), "Kamar tidak tersedia pada tanggal tersebut", Toast.LENGTH_SHORT).show();
                     }else{
@@ -108,63 +109,5 @@ public class HoteldetailActivity extends AppCompatActivity {
     public static String currencyFormat(String amount) {
         DecimalFormat formatter = new DecimalFormat("###,###,##0.00");
         return formatter.format(Double.parseDouble(amount));
-    }
-
-    private String send(String urlAddress, Data[] post)
-    {
-        //CONNECT
-        HttpURLConnection con= Connector.connect(urlAddress);
-
-        if(con==null)
-        {
-            return null;
-        }
-
-        try
-        {
-            OutputStream os=con.getOutputStream();
-
-            //WRITE
-            BufferedWriter bw=new BufferedWriter(new OutputStreamWriter(os,"UTF-8"));
-            bw.write(new DataPackager(post).packData());
-
-            bw.flush();
-
-            //RELEASE RES
-            bw.close();
-            os.close();
-
-            //HAS IT BEEN SUCCESSFUL?
-            int responseCode=con.getResponseCode();
-
-            if(responseCode==con.HTTP_OK)
-            {
-                //GET EXACT RESPONSE
-                BufferedReader br=new BufferedReader(new InputStreamReader(con.getInputStream()));
-                StringBuffer response=new StringBuffer();
-
-                String line;
-
-                //READ LINE BY LINE
-                while ((line=br.readLine()) != null)
-                {
-                    response.append(line);
-                }
-
-                //RELEASE RES
-                br.close();
-
-                return response.toString();
-
-            }else
-            {
-
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
     }
 }

@@ -36,7 +36,7 @@ public class MyroomListView extends ArrayAdapter<Myroom> {
     int resource;
     ArrayList<Myroom> myrooms;
     Data[] data = new Data[1];
-    String urladdress = Constant.BASE_URL + "Myroom/confirm/";
+    String urladdress = Constant.BASE_URL + "confirm/";
     public MyroomListView(Context context, int resource, ArrayList<Myroom> myrooms) {
         super(context, resource , myrooms);
         this.context=context;

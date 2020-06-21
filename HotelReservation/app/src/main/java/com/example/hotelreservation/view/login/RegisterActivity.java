@@ -35,7 +35,7 @@ import java.util.StringTokenizer;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    String urlAddress = Constant.BASE_URL + "Login/register";
+    String urlAddress = Constant.BASE_URL + "register";
     EditText userTxt,passTxt,namaTxt,emailTxt,phoneTxt,passcfrmTxt;
 
     ProgressDialog pd;
@@ -188,7 +188,8 @@ public class RegisterActivity extends AppCompatActivity {
          */
         @Override
         protected String doInBackground(Void... params) {
-            return this.send();
+            Connector connector = new Connector();
+            return connector.send(urlAddress, data);
         }
 
         /*
@@ -235,64 +236,5 @@ public class RegisterActivity extends AppCompatActivity {
         SEND DATA OVER THE NETWORK
         RECEIVE AND RETURN A RESPONSE
          */
-
-        private String send()
-        {
-            //CONNECT
-            HttpURLConnection con= Connector.connect(urlAddress);
-
-            if(con==null)
-            {
-                return null;
-            }
-
-            try
-            {
-                OutputStream os=con.getOutputStream();
-
-                //WRITE
-                BufferedWriter bw=new BufferedWriter(new OutputStreamWriter(os,"UTF-8"));
-                bw.write(new DataPackager(data).packData());
-
-                bw.flush();
-
-                //RELEASE RES
-                bw.close();
-                os.close();
-
-                //HAS IT BEEN SUCCESSFUL?
-                int responseCode=con.getResponseCode();
-
-                if(responseCode==con.HTTP_OK)
-                {
-                    //GET EXACT RESPONSE
-                    BufferedReader br=new BufferedReader(new InputStreamReader(con.getInputStream()));
-                    StringBuffer response=new StringBuffer();
-
-                    String line;
-
-                    //READ LINE BY LINE
-                    while ((line=br.readLine()) != null)
-                    {
-                        response.append(line);
-                    }
-
-                    //RELEASE RES
-                    br.close();
-
-                    return response.toString();
-
-                }else
-                {
-
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
     }
 }

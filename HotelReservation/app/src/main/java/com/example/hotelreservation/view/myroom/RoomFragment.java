@@ -42,7 +42,7 @@ import java.net.HttpURLConnection;
 import java.util.ArrayList;
 
 public class RoomFragment extends Fragment{
-    String urladdress=Constant.BASE_URL + "Myroom/getMyroom/";
+    String urladdress=Constant.BASE_URL + "getMyroom/";
     ListView listView;
     ArrayList<Myroom> arrayList;
     BufferedInputStream is;
@@ -54,6 +54,7 @@ public class RoomFragment extends Fragment{
     String scanFormat;
     String QRCODE_STRING;
     int getposition;
+    Connector connector = new Connector();
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -64,7 +65,7 @@ public class RoomFragment extends Fragment{
         SessionManagement sessionManagement = new SessionManagement(getContext());
         this.id = String.valueOf(sessionManagement.getSession());
         postdata[0]= new Data("id",id);
-        String result = send(urladdress);
+        String result = connector.send(urladdress, postdata);
         collectData(getContext(),result);
         MyroomListView myroomListView =new MyroomListView(getContext(),R.layout.room_row,arrayList);
         listView.setAdapter(myroomListView);
@@ -92,7 +93,7 @@ public class RoomFragment extends Fragment{
                 }else{
                     //for fragment you need to instantiate integrator in this way
                     IntentIntegrator scanIntegrator = IntentIntegrator.forSupportFragment(RoomFragment.this);
-                    scanIntegrator.setPrompt("Scan");
+                    scanIntegrator.setPrompt("SCAN QR CODE CHECK-IN");
                     scanIntegrator.setBeepEnabled(true);
 
 //                enable the following line if you want QR code
@@ -148,64 +149,6 @@ public class RoomFragment extends Fragment{
         }
     }
 
-    private String send(String urlAddress)
-    {
-        //CONNECT
-        HttpURLConnection con= Connector.connect(urlAddress);
-
-        if(con==null)
-        {
-            return null;
-        }
-
-        try
-        {
-            OutputStream os=con.getOutputStream();
-
-            //WRITE
-            BufferedWriter bw=new BufferedWriter(new OutputStreamWriter(os,"UTF-8"));
-            bw.write(new DataPackager(postdata).packData());
-
-            bw.flush();
-
-            //RELEASE RES
-            bw.close();
-            os.close();
-
-            //HAS IT BEEN SUCCESSFUL?
-            int responseCode=con.getResponseCode();
-
-            if(responseCode==con.HTTP_OK)
-            {
-                //GET EXACT RESPONSE
-                BufferedReader br=new BufferedReader(new InputStreamReader(con.getInputStream()));
-                StringBuffer response=new StringBuffer();
-
-                String line;
-
-                //READ LINE BY LINE
-                while ((line=br.readLine()) != null)
-                {
-                    response.append(line);
-                }
-
-                //RELEASE RES
-                br.close();
-
-                return response.toString();
-
-            }else
-            {
-
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -218,9 +161,9 @@ public class RoomFragment extends Fragment{
                 Myroom myroom = arrayList.get(getposition);
                 QRCODE_STRING = myroom.getQrcode();
                 if(scanContent.equals(QRCODE_STRING)){
-                    String urlcheckin= Constant.BASE_URL + "Myroom/confirm/";
+                    String urlcheckin= Constant.BASE_URL + "confirm/";
                     postdata[0]= new Data("idtransaksi", myroom.getIdtr());
-                    String result = send(urlcheckin);
+                    String result = connector.send(urlcheckin, postdata);
                     if(result != null)
                     {
                         if(result.equals("success")) {

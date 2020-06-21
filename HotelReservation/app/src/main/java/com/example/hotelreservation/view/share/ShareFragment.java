@@ -40,7 +40,7 @@ import java.net.HttpURLConnection;
 import java.util.ArrayList;
 
 public class ShareFragment extends Fragment {
-    String urladdress= Constant.BASE_URL + "Share/getSharedRoom/";
+    String urladdress= Constant.BASE_URL + "getSharedRoom/";
     ListView listView;
     ArrayList<Myroom> arrayList;
     BufferedInputStream is;
@@ -49,6 +49,7 @@ public class ShareFragment extends Fragment {
     String id;
     Data[] postdata = new Data[1];
     int getposition;
+    Connector connector = new Connector();
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -59,7 +60,7 @@ public class ShareFragment extends Fragment {
         SessionManagement sessionManagement = new SessionManagement(getContext());
         this.id = String.valueOf(sessionManagement.getSession());
         postdata[0]= new Data("id",id);
-        String result = send(urladdress);
+        String result = connector.send(urladdress, postdata);
         collectData(getContext(),result);
         ShareListView shareListView =new ShareListView(getContext(),R.layout.room_row,arrayList);
         listView.setAdapter(shareListView);
@@ -77,21 +78,22 @@ public class ShareFragment extends Fragment {
                 intent.putExtra("nomor", myroom.getNomor());
                 intent.putExtra("nama", myroom.getNama());
                 intent.putExtra("image", myroom.getImagepath());
+                intent.putExtra("checkinstats", myroom.getCheckinstats());
                 intent.putExtra("status", "shared");
+                intent.putExtra("idht", myroom.getIdht());
                 startActivity(intent);
             }
         });
         return view;
     }
 
-    private void collectData(Context c, String response){
-        if(response != null)
-        {
-            try{
-                JSONObject jo=new JSONObject(response);
-                JSONArray ja=jo.getJSONArray("share");
+    private void collectData(Context c, String response) {
+        if (response != null) {
+            try {
+                JSONObject jo = new JSONObject(response);
+                JSONArray ja = jo.getJSONArray("share");
 
-                for(int i=0;i<ja.length();i++){
+                for (int i = 0; i < ja.length(); i++) {
                     JSONObject listmyroom = ja.getJSONObject(i);
                     arrayList.add(new Myroom(
                             listmyroom.getString("idtransaksi"),
@@ -110,74 +112,13 @@ public class ShareFragment extends Fragment {
                             listmyroom.getString("qrcode")
                     ));
                 }
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
 
                 ex.printStackTrace();
             }
-        }else
-        {
+        } else {
             //NO SUCCESS
-            Toast.makeText(c,response,Toast.LENGTH_LONG).show();
+            Toast.makeText(c, response, Toast.LENGTH_LONG).show();
         }
-    }
-
-    private String send(String urlAddress)
-    {
-        //CONNECT
-        HttpURLConnection con= Connector.connect(urlAddress);
-
-        if(con==null)
-        {
-            return null;
-        }
-
-        try
-        {
-            OutputStream os=con.getOutputStream();
-
-            //WRITE
-            BufferedWriter bw=new BufferedWriter(new OutputStreamWriter(os,"UTF-8"));
-            bw.write(new DataPackager(postdata).packData());
-
-            bw.flush();
-
-            //RELEASE RES
-            bw.close();
-            os.close();
-
-            //HAS IT BEEN SUCCESSFUL?
-            int responseCode=con.getResponseCode();
-
-            if(responseCode==con.HTTP_OK)
-            {
-                //GET EXACT RESPONSE
-                BufferedReader br=new BufferedReader(new InputStreamReader(con.getInputStream()));
-                StringBuffer response=new StringBuffer();
-
-                String line;
-
-                //READ LINE BY LINE
-                while ((line=br.readLine()) != null)
-                {
-                    response.append(line);
-                }
-
-                //RELEASE RES
-                br.close();
-
-                return response.toString();
-
-            }else
-            {
-
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
     }
 }

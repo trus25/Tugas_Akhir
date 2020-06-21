@@ -76,6 +76,31 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
                             android:textSize="20dp"
                             android:text="1" />
                     </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentTop="true"
+                            android:textSize="20dp"
+                            android:textColor="#111111"
+                            android:text="Status User"/>
+
+                        <TextView
+                            android:id="@+id/statususer"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentTop="true"
+                            android:textColor="#111111"
+                            android:textSize="20dp"
+                            android:text="" />
+                    </RelativeLayout>
+
                     <Button
                         android:id="@+id/btnlift"
                         android:layout_width="match_parent"
@@ -154,7 +179,7 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
                     android:layout_width="match_parent"
                     android:gravity="left|center"
                     android:textSize="20dp"
-                    android:text="Listrik"
+                    android:text="Lampu"
                     android:paddingEnd="@dimen/sixteen_dp"/>
 
                 <Switch
@@ -251,6 +276,7 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/checkout_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/list_share_layout"

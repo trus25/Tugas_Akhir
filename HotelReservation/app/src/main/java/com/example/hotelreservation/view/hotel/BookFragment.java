@@ -30,7 +30,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class BookFragment extends Fragment {
-    String urladdress= Constant.BASE_URL + "Hotel/gethotel/";
+    String urladdress= Constant.BASE_URL + "gethotel/";
     String harga;
     ListView listView;
     ArrayList<Hotel> arrayList;
@@ -72,7 +72,8 @@ public class BookFragment extends Fragment {
     private void collectData()
     {
         //Connection
-        HttpURLConnection con = Connector.connect(urladdress);
+        Connector connector = new Connector();
+        HttpURLConnection con = connector.connect(urladdress);
         //content
         try{
             is=new BufferedInputStream(con.getInputStream());
@@ -88,18 +89,12 @@ public class BookFragment extends Fragment {
         catch (Exception ex)
         {
             ex.printStackTrace();
-
         }
 
 //JSON
         try{
             JSONObject jo=new JSONObject(result);
             JSONArray ja=jo.getJSONArray("listhotel");
-//            name=new String[ja.length()];
-//            email=new String[ja.length()];
-//            imagepath=new String[ja.length()];
-
-
             for(int i=0;i<ja.length();i++){
                 JSONObject listHotel = ja.getJSONObject(i);
                 arrayList.add(new Hotel(
@@ -109,9 +104,6 @@ public class BookFragment extends Fragment {
                         listHotel.getString("image"),
                         listHotel.getString("harga")
                 ));
-//                name[i]=listHotel.getString("nama");
-//                email[i]=listHotel.getString("alamat");
-//                imagepath[i]=listHotel.getString("image");
             }
         }
         catch (Exception ex)

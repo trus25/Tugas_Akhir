@@ -24,6 +24,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -45,6 +46,7 @@ import com.google.zxing.integration.android.IntentResult;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -60,13 +62,14 @@ public class MyroomActivity extends AppCompatActivity {
     private static final String CHANNEL_ID = "personal";
     private static final int NOTIFICATION_ID = 001;
     private boolean NOTIFICATION;
-    TextView nomor,nama;
+    TextView nomor,nama, statususer;
     ImageView picture;
     RecyclerView recyclerView;
     Switch sw, sw2;
     private RecyclerView.LayoutManager layoutManager;
     EditText username;
     RelativeLayout tv;
+    LinearLayout chklayout;
     Data[] postdata = new Data[1];
     Data[] postsharer = new Data[1];
     Data[] addshare = new Data[2];
@@ -74,9 +77,9 @@ public class MyroomActivity extends AppCompatActivity {
     Button btn,btnshare,btncheckout, btnlift;
     String currentuser, idtr, idht;
     String pintu, listrik, kipas;
-    String urladdress=Constant.BASE_URL + "Myroom/roomcond";
-    String urlgetsharer=Constant.BASE_URL + "Myroom/getRoomSharer/";
-    String urladdshare =Constant.BASE_URL + "Myroom/addShare/";
+    String urladdress=Constant.BASE_URL + "roomcond";
+    String urlgetsharer=Constant.BASE_URL + "getRoomSharer/";
+    String urladdshare =Constant.BASE_URL + "addShare/";
     String checkinstats;
     Data[] chkhandler = new Data[1];
     String scanContent;
@@ -85,6 +88,7 @@ public class MyroomActivity extends AppCompatActivity {
     ArrayList<Share> arrayList = new ArrayList<Share>();
     Handler handler = new Handler();
     Runnable runnable;
+    Connector connector = new Connector();
     int delay = 10*1000; //Delay for 15 seconds.  One second = 1000 milliseconds.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,11 +110,13 @@ public class MyroomActivity extends AppCompatActivity {
         username = findViewById(R.id.tambah_sharer);
         sw = (Switch) findViewById(R.id.switch1);
         tv = (RelativeLayout) findViewById(R.id.hiddenlayout);
+        chklayout = (LinearLayout) findViewById(R.id.checkout_layout);
         sw2 = (Switch) findViewById(R.id.switch2);
         btncheckout = (Button) findViewById(R.id.btncheckout);
         SessionManagement sessionManagement = new SessionManagement(this);
         this.currentuser = String.valueOf(sessionManagement.getUsername());
         chkhandler[0] = new Data("idtransaksi", idtr);
+        statususer = (TextView) findViewById(R.id.statususer);
 
 
         Intent intent = getIntent();
@@ -127,15 +133,15 @@ public class MyroomActivity extends AppCompatActivity {
 
         if(astatus.equals("shared")){
             setLayoutInvisible();
+            statususer.setText("Shared");
         }else{
             setLayoutVisible();
+            statususer.setText("Owner");
         }
 
         postdata[0]= new Data("idkamar",aid);
         postsharer[0]= new Data("tid", idtr);
-
-
-        String result = send(urladdress, postdata);
+        String result = connector.send(urladdress,postdata);
         collectData(this,result);
 
 
@@ -159,10 +165,10 @@ public class MyroomActivity extends AppCompatActivity {
                 sw.setChecked(true);
             }
 
-            if(listrik.equals("0")){
+            if(kipas.equals("0")){
                 sw2.setChecked(false);
             }else{
-                sw.setChecked(false);
+                sw2.setChecked(true);
             }
         }else{
             sw.setClickable(false);
@@ -171,8 +177,7 @@ public class MyroomActivity extends AppCompatActivity {
         nama.setText(anama);
         nomor.setText(nomorkamar);
         new DownloadImageTask(picture).execute(aimage);
-
-        String resultshare = send(urlgetsharer, postsharer);
+        String resultshare = connector.send(urlgetsharer, postsharer);
         collectDatashare(this, resultshare);
         recyclerView = (RecyclerView) findViewById(R.id.listsharer);
         MyroomAdapter myroomAdapter = new MyroomAdapter(this,R.layout.sharelist_row, arrayList);
@@ -183,11 +188,11 @@ public class MyroomActivity extends AppCompatActivity {
         sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
-                    String url = Constant.BASE_URL + "Myroom/setLampu/1";
-                    send(url, postdata);
+                    String url = Constant.BASE_URL + "setLampu/1";
+                    connector.send(url,postdata);
                 }else{
-                    String url = Constant.BASE_URL + "Myroom/setLampu/0";
-                    send(url, postdata);
+                    String url = Constant.BASE_URL + "setLampu/0";
+                    connector.send(url,postdata);
                 }
 
             }
@@ -197,11 +202,11 @@ public class MyroomActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
-                    String url = Constant.BASE_URL + "Myroom/setKipas/1";
-                    send(url, postdata);
+                    String url = Constant.BASE_URL + "setKipas/1";
+                    connector.send(url,postdata);
                 }else {
-                    String url = Constant.BASE_URL + "Myroom/setKipas/0";
-                    send(url, postdata);
+                    String url = Constant.BASE_URL + "setKipas/0";
+                    connector.send(url,postdata);
                 }
             }
         });
@@ -209,23 +214,23 @@ public class MyroomActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                     if(btn.getText().toString().equals("BUKA")) {
-                        String url = Constant.BASE_URL + "Myroom/setPintu/1";
-                        send(url,postdata);
+                        String url = Constant.BASE_URL + "setPintu/1";
+                        connector.send(url,postdata);
                         btn.setText("TUTUP");
                         btn.setBackgroundColor(Color.parseColor("#f44336"));
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 // Do something after 5s = 5000ms
-                                String url = Constant.BASE_URL + "Myroom/setPintu/0";
-                                send(url, postdata);
+                                String url = Constant.BASE_URL + "setPintu/0";
+                                connector.send(url, postdata);
                                 btn.setText("BUKA");
                                 btn.setBackgroundColor(Color.parseColor("#4CAF50"));
                             }
                         }, 2000);
                     }else if(btn.getText().toString().equals("TUTUP")){
-                        String url = Constant.BASE_URL + "Myroom/setPintu/0";
-                        send(url, postdata);
+                        String url = Constant.BASE_URL + "setPintu/0";
+                        connector.send(url,postdata);
                         btn.setText("BUKA");
                         btn.setBackgroundColor(Color.parseColor("#4CAF50"));
                     }
@@ -241,7 +246,7 @@ public class MyroomActivity extends AppCompatActivity {
                     }else{
                         addshare[0]= new Data("tid", idtr);
                         addshare[1]= new Data("username", username.getText().toString());
-                        String resultshare = send(urladdshare, addshare);
+                        String resultshare = connector.send(urladdshare, addshare);
                         if(resultshare.equals("notexist")){
                             Toast.makeText(getApplicationContext(), "Username tidak ada!", Toast.LENGTH_SHORT).show();
                         }else if (resultshare.equals("exist")){
@@ -249,7 +254,7 @@ public class MyroomActivity extends AppCompatActivity {
                         }else if(resultshare.equals("success")){
                             Toast.makeText(getApplicationContext(), "Sharing kamar berhasil", Toast.LENGTH_SHORT).show();
                             arrayList.clear();
-                            resultshare = send(urlgetsharer, postsharer);
+                            resultshare = connector.send(urlgetsharer, postsharer);
                             collectDatashare(getApplicationContext(), resultshare);
                             myroomAdapter.notifyDataSetChanged();
                         }else if(resultshare.equals("failed")){
@@ -282,9 +287,9 @@ public class MyroomActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             // DO SOMETHING HERE
-                            String url = Constant.BASE_URL + "Myroom/checkout/";
+                            String url = Constant.BASE_URL + "checkout/";
                             checkout[0] = new Data("idtransaksi", idtr);
-                            String result = send(url, checkout);
+                            String result = connector.send(url,checkout);
                             if(result.equals("success")){
                                 Toast.makeText(getApplicationContext(), "Checkout berhasil", Toast.LENGTH_SHORT).show();
                                 checkinstats="2";
@@ -313,7 +318,7 @@ public class MyroomActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //for fragment you need to instantiate integrator in this way
                 IntentIntegrator integrator = new IntentIntegrator(MyroomActivity.this);
-                integrator.setPrompt("Scan");
+                integrator.setPrompt("SCAN QR CODE PADA LIFT");
                 integrator.setBeepEnabled(true);
 
 //                enable the following line if you want QR code
@@ -328,73 +333,17 @@ public class MyroomActivity extends AppCompatActivity {
     }
 
     public void setLayoutInvisible() {
-        if (tv.getVisibility() == View.VISIBLE) {
+//        if (tv.getVisibility() == View.VISIBLE || chklayout.getVisibility() == View.VISIBLE) {
             tv.setVisibility(View.GONE);
-        }
+            chklayout.setVisibility(View.GONE);
+//        }
     }
 
     public void setLayoutVisible() {
-        if (tv.getVisibility() == View.GONE) {
+//        if (tv.getVisibility() == View.GONE || chklayout.getVisibility() == View.GONE) {
             tv.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private String send(String urlAddress, Data[] post)
-    {
-        //CONNECT
-        HttpURLConnection con= Connector.connect(urlAddress);
-
-        if(con==null)
-        {
-            return null;
-        }
-
-        try
-        {
-            OutputStream os=con.getOutputStream();
-
-            //WRITE
-            BufferedWriter bw=new BufferedWriter(new OutputStreamWriter(os,"UTF-8"));
-            bw.write(new DataPackager(post).packData());
-
-            bw.flush();
-
-            //RELEASE RES
-            bw.close();
-            os.close();
-
-            //HAS IT BEEN SUCCESSFUL?
-            int responseCode=con.getResponseCode();
-
-            if(responseCode==con.HTTP_OK)
-            {
-                //GET EXACT RESPONSE
-                BufferedReader br=new BufferedReader(new InputStreamReader(con.getInputStream()));
-                StringBuffer response=new StringBuffer();
-
-                String line;
-
-                //READ LINE BY LINE
-                while ((line=br.readLine()) != null)
-                {
-                    response.append(line);
-                }
-
-                //RELEASE RES
-                br.close();
-
-                return response.toString();
-
-            }else
-            {
-
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+            chklayout.setVisibility(View.VISIBLE);
+//        }
     }
 
     private void collectData(Context c, String response){
@@ -456,9 +405,9 @@ public class MyroomActivity extends AppCompatActivity {
         handler.postDelayed( runnable = new Runnable() {
             public void run() {
                 //do something
-                String url = Constant.BASE_URL + "Myroom/chkhandler/";
+                String url = Constant.BASE_URL + "chkhandler/";
                 chkhandler[0] = new Data("idtransaksi", idtr);
-                String result = send(url,chkhandler);
+                String result = connector.send(url, chkhandler);
                 if(result.equals("wait")){
                     if(!checkinstats.equals("2")){
                         sw.setChecked(false);
@@ -561,12 +510,12 @@ public class MyroomActivity extends AppCompatActivity {
                 String lokasilift = st.nextToken();
                 QRCODE_STRING = idht;
                 if(idhotel.equals(QRCODE_STRING)){
-                    String urlcheckin= Constant.BASE_URL + "Hotel/setLift/1";
+                    String urlcheckin= Constant.BASE_URL + "setLift/1";
                     postdata[0]= new Data("idlift", idlift);
                     new Thread(new Runnable() {
                         @Override public void run() {
                             // background code
-                           send(urlcheckin, postdata);
+                           connector.send(urlcheckin, postdata);
                         } }).start();
                     Toast.makeText(this, "Lokasi Lift: " + lokasilift + "  Status: Aktif", Toast.LENGTH_SHORT).show();
 

@@ -50,7 +50,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class ReviewActivity extends AppCompatActivity implements TransactionFinishedCallback, AdapterView.OnItemSelectedListener {
-    String urladdress= Constant.BASE_URL + "Transaksi/rentRoom";
+    String urladdress= Constant.BASE_URL + "rentRoom";
     private EditText nama, email, nohp, tglcheckin, durasi;
     private TextView hotelname, alamat, harga, hargatotal;
     private ImageView hotelimage;
@@ -58,12 +58,12 @@ public class ReviewActivity extends AppCompatActivity implements TransactionFini
     private String aid,anama,aharga,aidkamar,anomorkamar,aalamat,aimage, adurasi, atglcheckin;
     int atotalharga;
     Data[] postdata = new Data[6];
-
+    Connector connector = new Connector();
 
     private ArrayList<Kamar> arrayList;
     private Data[] postdatakamar= new Data[3];
     private Spinner spinner;
-    private String urladdresskamar = Constant.BASE_URL + "Hotel/getAvailableRoom/";
+    private String urladdresskamar = Constant.BASE_URL + "getAvailableRoom/";
     private int selectedroom;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,7 +104,7 @@ public class ReviewActivity extends AppCompatActivity implements TransactionFini
         postdatakamar[0]= new Data("idhotel",aid);
         postdatakamar[1]= new Data("checkin",atglcheckin);
         postdatakamar[2]= new Data("durasi",adurasi);
-        String result = send(urladdresskamar, postdatakamar);
+        String result = connector.send(urladdresskamar,postdatakamar);
         if(result.equals("null")){
                 arrayList.add(new Kamar("0","Kamar Habis"));
         }else{
@@ -206,7 +206,7 @@ public class ReviewActivity extends AppCompatActivity implements TransactionFini
                    postdata[3] = new Data("checkin", atglcheckin);
                    postdata[4] = new Data("durasi", adurasi);
                    postdata[5] = new Data("total", String.valueOf(totalbiaya));
-                   String response = send(urladdress,postdata);
+                   String response = connector.send(urladdress, postdata);
                    if(response.equals("success")){
                        Intent intent = new Intent(this, MainActivity.class);
                        startActivity(intent);
@@ -256,64 +256,6 @@ public class ReviewActivity extends AppCompatActivity implements TransactionFini
             //NO SUCCESS
             Toast.makeText(c,response,Toast.LENGTH_LONG).show();
         }
-    }
-
-    private String send(String urlAddress, Data[] post)
-    {
-        //CONNECT
-        HttpURLConnection con= Connector.connect(urlAddress);
-
-        if(con==null)
-        {
-            return null;
-        }
-
-        try
-        {
-            OutputStream os=con.getOutputStream();
-
-            //WRITE
-            BufferedWriter bw=new BufferedWriter(new OutputStreamWriter(os,"UTF-8"));
-            bw.write(new DataPackager(post).packData());
-
-            bw.flush();
-
-            //RELEASE RES
-            bw.close();
-            os.close();
-
-            //HAS IT BEEN SUCCESSFUL?
-            int responseCode=con.getResponseCode();
-
-            if(responseCode==con.HTTP_OK)
-            {
-                //GET EXACT RESPONSE
-                BufferedReader br=new BufferedReader(new InputStreamReader(con.getInputStream()));
-                StringBuffer response=new StringBuffer();
-
-                String line;
-
-                //READ LINE BY LINE
-                while ((line=br.readLine()) != null)
-                {
-                    response.append(line);
-                }
-
-                //RELEASE RES
-                br.close();
-
-                return response.toString();
-
-            }else
-            {
-
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
     }
 
 //    public boolean isConnected() {
